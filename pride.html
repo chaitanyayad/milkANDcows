@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yadav & Proud</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FDF6E3;
+    --warm: #F5E6C8;
+    --gold: #D4A017;
+    --deep: #1A0A00;
+    --brown: #5C2E00;
+    --accent: #E8650A;
+    --green: #2D6A4F;
+    --light-green: #52B788;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--deep);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    text-align: center;
+    padding: 2rem;
+    background: #1A0A00;
+  }
+
+  .hero-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 1.5s ease;
+  }
+
+  .hero-video.loaded { opacity: 1; }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(26,10,0,0.6) 0%, rgba(26,10,0,0.45) 50%, rgba(26,10,0,0.75) 100%);
+    z-index: 1;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hero-badge {
+    background: var(--gold);
+    color: var(--deep);
+    font-weight: 500;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 0.4rem 1.2rem;
+    border-radius: 999px;
+    margin-bottom: 1.5rem;
+    animation: fadeDown 0.8s ease both;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3.5rem, 10vw, 8rem);
+    font-weight: 900;
+    color: var(--cream);
+    line-height: 0.95;
+    margin-bottom: 0.5rem;
+    animation: fadeDown 0.8s 0.2s ease both;
+  }
+
+  .hero h1 span { color: var(--gold); display: block; }
+
+  .hero-sub {
+    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    color: rgba(253,246,227,0.75);
+    margin: 1.5rem 0 2.5rem;
+    max-width: 500px;
+    line-height: 1.6;
+    animation: fadeDown 0.8s 0.4s ease both;
+  }
+
+  .hero-cta {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    padding: 0.9rem 2.5rem;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    animation: fadeDown 0.8s 0.6s ease both;
+    transition: transform 0.2s, background 0.2s;
+  }
+
+  .hero-cta:hover { transform: translateY(-3px); background: #D4560A; }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(253,246,227,0.35);
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    z-index: 2;
+    animation: bounce 2s infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(7px); }
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* CLAP BACK */
+  .clap {
+    background: var(--accent);
+    padding: 5rem 2rem;
+    text-align: center;
+  }
+
+  .clap h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    color: white;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+  }
+
+  .clap p {
+    color: rgba(255,255,255,0.85);
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* STATS */
+  .stats { background: var(--warm); padding: 6rem 2rem; }
+  .stats-inner { max-width: 1100px; margin: 0 auto; }
+
+  .section-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    color: var(--deep);
+    margin-bottom: 3rem;
+    max-width: 600px;
+    line-height: 1.2;
+  }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem 1.5rem;
+    border-left: 5px solid var(--gold);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    transition: transform 0.3s;
+  }
+
+  .stat-card:hover { transform: translateY(-6px); }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+
+  .stat-label { font-size: 0.9rem; color: var(--brown); line-height: 1.4; font-weight: 500; }
+  .stat-source { font-size: 0.72rem; color: #aaa; margin-top: 0.4rem; }
+
+  /* COW FACTS */
+  .cowfacts { background: var(--deep); padding: 6rem 2rem; color: var(--cream); }
+  .cowfacts-inner { max-width: 1100px; margin: 0 auto; }
+  .cowfacts .section-label { color: var(--light-green); }
+  .cowfacts .section-title { color: var(--cream); }
+
+  .facts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+  }
+
+  .fact-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 2rem;
+    transition: background 0.3s, transform 0.3s;
+  }
+
+  .fact-card:hover { background: rgba(255,255,255,0.09); transform: translateY(-4px); }
+
+  .fact-icon {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 1rem;
+    display: block;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 0.1em;
+  }
+
+  .fact-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--gold); margin-bottom: 0.6rem; }
+  .fact-body { font-size: 0.92rem; color: rgba(253,246,227,0.7); line-height: 1.6; }
+
+  /* HISTORY */
+  .history { background: var(--green); padding: 6rem 2rem; color: white; }
+  .history-inner { max-width: 900px; margin: 0 auto; }
+  .history .section-label { color: var(--light-green); }
+  .history .section-title { color: white; }
+
+  .timeline { position: relative; margin-top: 2rem; }
+
+  /* The growing vertical line */
+  .timeline-line {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 3px;
+    background: rgba(255,255,255,0.2);
+    height: 100%;
+  }
+
+  .timeline-line-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 3px;
+    background: var(--gold);
+    height: 0%;
+    transition: height 0.6s ease;
+  }
+
+  /* Timeline items — hidden by default, slide in */
+  .tl-item {
+    padding-left: 2.5rem;
+    padding-bottom: 2.5rem;
+    position: relative;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .tl-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Dot — gold when visible */
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: 6px;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    border: 3px solid var(--green);
+    transition: background 0.4s ease;
+  }
+
+  .tl-item.visible::before { background: var(--gold); }
+
+  .tl-era {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--light-green);
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+  }
+
+  .tl-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: white; margin-bottom: 0.4rem; }
+
+  .tl-body {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.6;
+    min-height: 1.4em;
+  }
+
+  /* Blinking cursor during typewriter */
+  .tl-body.typing::after {
+    content: '|';
+    color: var(--gold);
+    animation: blink 0.6s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* COMEBACKS */
+  .roast { background: var(--cream); padding: 6rem 2rem; text-align: center; }
+
+  .roast h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    color: var(--deep);
+    margin-bottom: 1rem;
+  }
+
+  .roast > p {
+    color: var(--brown);
+    font-size: 1rem;
+    max-width: 550px;
+    margin: 0 auto 3rem;
+    line-height: 1.7;
+  }
+
+  .comebacks { display: flex; flex-direction: column; gap: 1rem; max-width: 700px; margin: 0 auto; }
+
+  .comeback {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    text-align: left;
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    border: 1px solid rgba(0,0,0,0.06);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .comeback::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 0;
+  }
+
+  .comeback:nth-child(1)::before { background: #FFF3E0; }
+  .comeback:nth-child(2)::before { background: #E8F5E9; }
+  .comeback:nth-child(3)::before { background: #FDF0C2; }
+  .comeback:nth-child(4)::before { background: #FCE4EC; }
+
+  .comeback:hover::before { transform: translateX(0); }
+  .comeback:hover { transform: translateY(-6px); box-shadow: 0 14px 36px rgba(0,0,0,0.12); }
+
+  .comeback > * { position: relative; z-index: 1; }
+
+  .comeback-svg {
+    position: absolute;
+    bottom: -18px;
+    right: -18px;
+    width: 90px;
+    height: 90px;
+    opacity: 0;
+    transform: scale(0.4) rotate(15deg);
+    transition: opacity 0.35s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .comeback:hover .comeback-svg {
+    opacity: 1;
+    transform: scale(1) rotate(-6deg);
+  }
+
+  .comeback-svg img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .comeback-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    color: var(--gold);
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  .comeback-text strong {
+    display: block;
+    color: var(--accent);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.3rem;
+  }
+
+  .comeback-text p { color: var(--deep); font-size: 0.95rem; line-height: 1.5; margin: 0; }
+
+  footer {
+    background: var(--deep);
+    color: rgba(253,246,227,0.4);
+    text-align: center;
+    padding: 2.5rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+  }
+
+  footer span { color: var(--gold); }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <video class="hero-video" id="heroBg" autoplay muted loop playsinline>
+    <source src="https://assets.mixkit.co/videos/31433/31433-360.mp4" type="video/mp4">
+    <source src="https://assets.mixkit.co/videos/9688/9688-360.mp4" type="video/mp4">
+  </video>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Est. Since Ancient India</div>
+    <h1>Yadav<span>& Proud.</span></h1>
+    <p class="hero-sub">While your friends were teasing you, Yadavs were literally feeding the nation. Let that sink in.</p>
+    <button class="hero-cta" onclick="document.getElementById('stats').scrollIntoView({behavior:'smooth'})">Show Them the Facts</button>
+  </div>
+  <div class="scroll-hint">SCROLL DOWN</div>
+</section>
+
+<!-- CLAP BACK -->
+<section class="clap">
+  <h2>They teased you about cows?<br>That's actually hilarious.</h2>
+  <p>Because cows built one of the world's oldest agricultural civilizations, and dairy is now a <strong>Rs. 10+ lakh crore industry in India alone.</strong> Your ancestors weren't just farmers. They were the original engineers of Indian food culture.</p>
+</section>
+
+<!-- STATS -->
+<section class="stats" id="stats">
+  <div class="stats-inner">
+    <div class="section-label">Hard Numbers</div>
+    <h2 class="section-title">India's Dairy Dominance (Thanks, Yadavs)</h2>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-num" data-prefix="#" data-target="1" data-suffix="">#1</div><div class="stat-label">India is the world's largest milk producer — for over 20 years straight</div><div class="stat-source">FAO, 2024</div></div>
+      <div class="stat-card"><div class="stat-num" data-prefix="" data-target="24" data-suffix="%">24%</div><div class="stat-label">India's share of global milk production</div><div class="stat-source">National Dairy Development Board</div></div>
+      <div class="stat-card"><div class="stat-num" data-prefix="" data-target="8" data-suffix="Cr+">8Cr+</div><div class="stat-label">Rural families that depend on dairy for their livelihoods</div><div class="stat-source">Ministry of Fisheries, Animal Husbandry & Dairying</div></div>
+      <div class="stat-card"><div class="stat-num" data-prefix="" data-target="230" data-suffix="M+">230M+</div><div class="stat-label">Tonnes of milk produced in India annually</div><div class="stat-source">DAHD Annual Report 2023-24</div></div>
+      <div class="stat-card"><div class="stat-num" data-prefix="Rs. " data-target="10" data-suffix="L Cr">Rs. 10L Cr</div><div class="stat-label">Estimated value of India's dairy economy</div><div class="stat-source">NITI Aayog</div></div>
+      <div class="stat-card"><div class="stat-num" data-prefix="" data-target="70" data-suffix="M+">70M+</div><div class="stat-label">Yadav community population — one of India's largest OBC groups</div><div class="stat-source">Census Estimates</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- COW FACTS -->
+<section class="cowfacts">
+  <div class="cowfacts-inner">
+    <div class="section-label">Did You Know?</div>
+    <h2 class="section-title">Actually Insane Cow Facts</h2>
+    <div class="facts-grid">
+      <div class="fact-card"><span class="fact-icon">01 —</span><div class="fact-title">Cows Have Best Friends</div><p class="fact-body">Cows form close bonds with other cows. When separated from their best friend, their stress hormones spike. They literally have besties.</p></div>
+      <div class="fact-card"><span class="fact-icon">02 —</span><div class="fact-title">They Remember Faces</div><p class="fact-body">Cows can recognize and remember over 100 individual faces — both cows and humans. They hold grudges too. Don't mess.</p></div>
+      <div class="fact-card"><span class="fact-icon">03 —</span><div class="fact-title">A Lifetime of Milk</div><p class="fact-body">A single cow produces an average of 200,000 glasses of milk in her lifetime. That's enough chai for your entire mohalla. Forever.</p></div>
+      <div class="fact-card"><span class="fact-icon">04 —</span><div class="fact-title">Sacred Across Cultures</div><p class="fact-body">Cows are revered in Hinduism, respected in ancient Egypt, and considered symbols of prosperity in dozens of cultures worldwide. Universal respect.</p></div>
+      <div class="fact-card"><span class="fact-icon">05 —</span><div class="fact-title">They Communicate Emotions</div><p class="fact-body">Cows make specific sounds to express emotions. Researchers found they hum at a lower frequency when happy and higher when stressed. Pure mood.</p></div>
+      <div class="fact-card"><span class="fact-icon">06 —</span><div class="fact-title">India's Special Breeds</div><p class="fact-body">Indian breeds like Gir, Sahiwal, and Red Sindhi are now exported globally for their superior milk quality and heat resistance. Made in India. World-class.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORY -->
+<section class="history">
+  <div class="history-inner">
+    <div class="section-label">Legacy</div>
+    <h2 class="section-title">The Yadav Story</h2>
+    <div class="timeline" id="timeline">
+      <div class="timeline-line"></div>
+      <div class="timeline-line-fill" id="timelineFill"></div>
+
+      <div class="tl-item" data-text="The Yadavas are referenced in the Mahabharata, Puranas, and Vedic texts as descendants of Yadu — one of the sons of King Yayati. Lord Krishna himself belonged to the Yadava clan. Not bad company.">
+        <div class="tl-era">Ancient Era</div>
+        <div class="tl-title">The Yadava Clans</div>
+        <p class="tl-body"></p>
+      </div>
+      <div class="tl-item" data-text="For millennia, Yadav communities (including Ahirs, Gwala, Gope and others) were the backbone of India's pastoral economy — managing cattle herds and dairy that fed entire kingdoms.">
+        <div class="tl-era">Agricultural Foundation</div>
+        <div class="tl-title">Keepers of the Land & Cattle</div>
+        <p class="tl-body"></p>
+      </div>
+      <div class="tl-item" data-text="In the 20th century, Yadavs became one of the most politically influential communities in India — producing state Chief Ministers and national leaders across UP, Bihar, and beyond.">
+        <div class="tl-era">Modern India</div>
+        <div class="tl-title">Political & Social Rise</div>
+        <p class="tl-body"></p>
+      </div>
+      <div class="tl-item" data-text="Yadavs today are doctors, engineers, politicians, athletes, entrepreneurs, and artists. The community spans hundreds of millions of people across South Asia. And yes — also dairy farmers. Proudly.">
+        <div class="tl-era">Today</div>
+        <div class="tl-title">Everywhere, Doing Everything</div>
+        <p class="tl-body"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMEBACKS -->
+<section class="roast">
+  <h2>Ready-Made Comebacks</h2>
+  <p>Next time your friends open their mouths, just pick one of these and walk away.</p>
+  <div class="comebacks">
+    <div class="comeback"><div class="comeback-num">01</div><div class="comeback-text"><strong>When they say "you like cows"</strong><p>"Yes, and cows built an industry worth more than most countries' GDPs. What has your family business built?"</p></div><div class="comeback-svg"><img src="holstein.svg" alt=""></div></div>
+    <div class="comeback"><div class="comeback-num">02</div><div class="comeback-text"><strong>When they joke about milk</strong><p>"Every chai, lassi, paneer, ghee, and butter you've ever eaten exists because of people like my community. You're literally nourished by us. You're welcome."</p></div><div class="comeback-svg"><img src="milk.svg" alt=""></div></div>
+    <div class="comeback"><div class="comeback-num">03</div><div class="comeback-text"><strong>The history card</strong><p>"Lord Krishna — the most beloved figure in Indian history — was a Yadav. I'm in good company."</p></div><div class="comeback-svg"><img src="krishna.svg" alt=""></div></div>
+    <div class="comeback"><div class="comeback-num">04</div><div class="comeback-text"><strong>The mic drop</strong><p>"India is the #1 milk producer in the world. We're feeding 1.4 billion people. What are YOU doing?"</p></div><div class="comeback-svg"><img src="tajmahall.svg" alt=""></div></div>
+    c
+  </div>
+</section>
+
+<footer>
+  Made with <span>pride</span> &nbsp;·&nbsp; Yadav & Proud &nbsp;·&nbsp; <span>#NotAnInsult</span>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  // ── VIDEO ─────────────────────────────────────────────────
+  const vid = document.getElementById('heroBg');
+  if (vid) { vid.addEventListener('canplay', () => vid.classList.add('loaded')); vid.load(); }
+
+  // ── COUNTERS ──────────────────────────────────────────────
+  const statNums = document.querySelectorAll('.stat-num');
+  let counted = false;
+  function easeOutQuart(t) { return 1 - Math.pow(1 - t, 4); }
+  function animateCounters() {
+    if (counted) return; counted = true;
+    const duration = 2000, start = performance.now();
+    function tick(now) {
+      const e = easeOutQuart(Math.min((now - start) / duration, 1));
+      statNums.forEach(el => {
+        el.textContent = el.dataset.prefix + Math.round(e * parseFloat(el.dataset.target)) + el.dataset.suffix;
+      });
+      if (e < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+  new IntersectionObserver((en, ob) => { if (en[0].isIntersecting) { animateCounters(); ob.disconnect(); } }, { threshold: 0.3 })
+    .observe(document.querySelector('.stats'));
+
+  // ── TIMELINE: line flows → stops at dot → types → repeats ─
+  const tlItems   = Array.from(document.querySelectorAll('.tl-item'));
+  const fill      = document.getElementById('timelineFill');
+  const tl        = document.getElementById('timeline');
+  let   sequence  = false;
+
+  // Measure where each dot sits as a % of the total timeline height
+  function dotPercent(item) {
+    const tlTop   = tl.getBoundingClientRect().top + window.scrollY;
+    const itemTop = item.getBoundingClientRect().top + window.scrollY;
+    const offset  = itemTop - tlTop + 6; // 6 = half dot height
+    return (offset / tl.offsetHeight) * 100;
+  }
+
+  // Animate fill height from `from` % to `to` % over `ms` ms
+  function animateLine(from, to, ms) {
+    return new Promise(resolve => {
+      const start = performance.now();
+      function tick(now) {
+        const p = Math.min((now - start) / ms, 1);
+        const ease = 1 - Math.pow(1 - p, 3); // easeOutCubic
+        fill.style.height = (from + (to - from) * ease) + '%';
+        if (p < 1) requestAnimationFrame(tick); else resolve();
+      }
+      requestAnimationFrame(tick);
+    });
+  }
+
+  // Typewrite text into el
+  function typewrite(el, text) {
+    return new Promise(resolve => {
+      el.textContent = '';
+      el.classList.add('typing');
+      let i = 0;
+      const iv = setInterval(() => {
+        el.textContent += text[i++];
+        if (i >= text.length) { clearInterval(iv); el.classList.remove('typing'); resolve(); }
+      }, 4);
+    });
+  }
+
+  // Run the full sequential animation
+  async function runTimeline() {
+    let currentPct = 0;
+    for (const item of tlItems) {
+      const target = dotPercent(item);
+      // 1. Flow line down to this dot
+      await animateLine(currentPct, target, 700);
+      currentPct = target;
+      // 2. Pop the dot gold + fade item in
+      item.classList.add('visible');
+      // 3. Typewrite the body text
+      const bodyEl = item.querySelector('.tl-body');
+      await new Promise(r => setTimeout(r, 150)); // tiny pause after dot appears
+      await typewrite(bodyEl, item.dataset.text);
+      await new Promise(r => setTimeout(r, 250)); // breath between points
+    }
+    // Flow line to very end
+    await animateLine(currentPct, 100, 500);
+  }
+
+  // Trigger once the history section enters view
+  new IntersectionObserver((entries, obs) => {
+    if (entries[0].isIntersecting && !sequence) {
+      sequence = true;
+      obs.disconnect();
+      runTimeline();
+    }
+  }, { threshold: 0.15 }).observe(document.querySelector('.history'));
+
+});
+</script>
+</body>
+</html>
